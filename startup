@@ -2,7 +2,7 @@
 set -euo pipefail
 
 apt update
-apt install qemu-system cloud-image-utils wget lsof
+apt install qemu-system cloud-image-utils wget lsof -y
 
 # =============================
 # Enhanced Multi-VM Manager (Pure QEMU Version)
