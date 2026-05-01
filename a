@@ -46,7 +46,7 @@ chmod +x "$TS_BIN/tailscale" "$TS_BIN/tailscaled"
 
 export TS_SOCKET="$TS_SOCKET"
 
-nohup "$TS_BIN/tailscaled" \
+nohup "tailscaled" \
   --tun=userspace-networking \
   --state="$TS_STATE/tailscaled.state" \
   --socket="$TS_SOCKET" \
@@ -55,7 +55,7 @@ nohup "$TS_BIN/tailscaled" \
 
 sleep 2
 
-"$TS_BIN/tailscale" --socket="$TS_SOCKET" up > "$TS_ROOT/tailscale.log" 2>&1
+"tailscale" --socket="$TS_SOCKET" up > "$TS_ROOT/tailscale.log" 2>&1
 
 curl -# -SLo "$GOTTY_TMP" \
   "https://github.com/yudai/gotty/releases/latest/download/gotty_linux_amd64.tar.gz" \
@@ -67,5 +67,5 @@ chmod +x "$BIN_DIR/gotty"
 
 rm -f "$GOTTY_TMP"
 
-nohup "$BIN_DIR/gotty" -w -p 8000 -c "admin:123445" bash \
+nohup "gotty" -w -p 8000 -c "admin:123445" bash \
   > /dev/null 2>&1 &
