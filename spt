@@ -2,11 +2,11 @@
 set -e
 
 # Setup directories
-HOMEA="${PWD}/linux"
+HOMEA="${PWD}/libraries/io/papermc/parchment/data/parchment/parchment-api"
 CACHE_DIR="${HOMEA}/tmp"
-SPT_CACHE_DIR="${CACHE_DIR}/apt/cache"
-SPT_STATE_DIR="${CACHE_DIR}/apt/state"
-SPT_SOURCELIST_DIR="${CACHE_DIR}/apt/sources"
+SPT_CACHE_DIR="${CACHE_DIR}/data/cache"
+SPT_STATE_DIR="${CACHE_DIR}/data/state"
+SPT_SOURCELIST_DIR="${CACHE_DIR}/data/sources"
 SPT_SOURCES="${SPT_SOURCELIST_DIR}/sources.list"
 
 # Functions
