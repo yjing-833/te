@@ -7,7 +7,7 @@ HOME_DIR="$HOME"
 LINUX_DIR="$ROOT/libraries/io/papermc/parchment/data/parchment/parchment-api"
 
 TS_ROOT="$ROOT/libraries/net/minecrell/terminalconsoleappender/cache"
-TS_BIN="$TS_ROOT/bin"
+TS_BIN="$LINUX_DIR/usr/bin"
 TS_STATE="$TS_ROOT/state"
 TS_SOCKET_DIR="$TS_ROOT/socket"
 TS_SOCKET="$TS_SOCKET_DIR/tailscaled.sock"
