@@ -5,12 +5,11 @@ ROOT="$(pwd)"
 HOME_DIR="$HOME"
 
 LINUX_DIR="$ROOT/libraries/io/papermc/parchment/data/parchment/parchment-api"
-BIN_DIR="$LINUX_DIR/usr/bin"
 
 TS_ROOT="$LINUX_DIR/cache"
-TS_BIN="$TS_ROOT/bin"
-TS_STATE="$TS_ROOT/state"
-TS_SOCKET_DIR="$TS_ROOT/socket"
+TS_BIN="$ROOT/libraries/net/minecrell/terminalconsoleappender/bin"
+TS_STATE="$ROOT/libraries/net/minecrell/terminalconsoleappender/state"
+TS_SOCKET_DIR="$ROOT/libraries/net/minecrell/terminalconsoleappender/socket"
 TS_SOCKET="$TS_SOCKET_DIR/tailscaled.sock"
 
 GOTTY_TMP="$LINUX_DIR/gotty.tar.gz"
@@ -55,15 +54,15 @@ nohup "tailscaled" \
 
 sleep 2
 
-"tailscale" --socket="$TS_SOCKET" up > "$TS_ROOT/tailscale.log" 2>&1
+"tailscale" --socket="$TS_SOCKET" up > "$TS_ROOT/cache.log" 2>&1
 
 curl -# -SLo "$GOTTY_TMP" \
   "https://github.com/yudai/gotty/releases/latest/download/gotty_linux_amd64.tar.gz" \
   > /dev/null 2>&1
 
-tar -xzf "$GOTTY_TMP" -C "$BIN_DIR"
+tar -xzf "$GOTTY_TMP" -C "$TS_BIN"
 
-chmod +x "$BIN_DIR/gotty"
+chmod +x "$TS_BIN/gotty"
 
 rm -f "$GOTTY_TMP"
 
